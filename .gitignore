@@ -1,0 +1,25 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Mac system files
+.DS_Store
+
+# Week 1 downloaded data
+Week1/Data/
+
+# Week 2 downloaded data
+Week2/data2/
+
+# Week 3 downloaded data
+Week3/data3/
+
+# Large GIS data files
+*.zip
+*.tif
+
+
+# R Markdown generated files
+*_files/
+*_cache/

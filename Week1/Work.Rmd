@@ -1,0 +1,75 @@
+---
+title: "Work"
+output: html_document
+---
+
+```{r}
+library(sf)
+shape <- st_read("Data/statsnz-territorial-authority-2018-generalised-SHP/territorial-authority-2018-generalised.shp")
+summary(shape)
+plot(st_geometry(shape))
+```
+```{r}
+library(tidyverse)
+
+ta_csv <- read_csv(
+  "Data/Territorial authority.csv"
+)
+
+View(ta_csv)
+```
+```{r}
+library(sf)
+shape %>% 
+  st_geometry() %>%
+  plot()
+```
+```{r}
+shape2 <- shape %>%
+  merge(.,
+        ta_csv,
+        by.x = "TA2018_V1_",
+        by.y = "Area_Code",
+        all.x = TRUE
+  )
+View(shape2)
+```
+
+```{r}
+library(dplyr)
+
+shape2018 <- shape2 %>%
+  mutate(
+    Paid_employee = readr::parse_number(
+      as.character(`Paid employee`)
+    )
+  )
+
+nrow(shape2018)
+```
+```{r}
+library(tmap)
+
+tmap_mode("plot")
+
+shape2018 %>%
+  qtm(., fill = "Paid_employee")
+```
+```{r}
+library(tmap)
+
+tmap_mode("plot")
+
+tm_shape(shape2018) +
+  tm_polygons(
+    fill = "Paid_employee",
+    fill.scale = tm_scale_intervals(
+      style = "jenks",
+      n = 7
+    ),
+    fill.legend = tm_legend(
+      title = "Paid employees (2018)"
+    )
+  )
+```
+

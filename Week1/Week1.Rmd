@@ -1,0 +1,53 @@
+---
+title: "Week1"
+output: html_document
+---
+```{r}
+library(tidyverse)
+mycsv <- read_csv("Data/fly-tipping-borough.csv")  
+View(mycsv)
+```
+```{r}
+library(sf)
+# my data is within a prac1_data folder.
+shape <- st_read("Data/statistical-gis-boundaries-london/ESRI/London_Borough_Excluding_MHW.shp")
+summary(shape)
+plot(shape)
+```
+```{r}
+library(sf)
+shape %>% 
+  st_geometry() %>%
+  plot()
+```
+```{r}
+shape2 <- shape %>%
+  merge(.,
+        mycsv,
+        by.x = "GSS_CODE",
+        by.y = "code")
+shape%>%
+  head(., n=10)
+```
+```{r}
+library(dplyr)
+
+shape_2011 <- shape2 %>%
+  filter(year == "2011-12") %>%
+  mutate(
+    total_incidents = readr::parse_number(
+      as.character(total_incidents)
+    )
+  )
+nrow(shape_2011)
+```
+```{r}
+library(tmap)
+
+tmap_mode("plot")
+
+shape_2011 %>%
+  qtm(., fill = "total_incidents")
+```
+
+
